@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface IReportService {
 
-    void create(ReportType type, Map<String, Object> params);
+    UUID create(ReportType type, Map<String, Object> params);
 
     ByteArrayOutputStream read(UUID id);
 

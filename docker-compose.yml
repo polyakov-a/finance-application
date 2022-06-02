@@ -38,6 +38,10 @@ services:
     build: report-service
     networks:
       - finance_ntwrk
+  mail-service:
+    build: mail-service
+    networks:
+      - finance_ntwrk
   proxy:
     build: proxy
     ports:

@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/mail_service"
+    username: "postgres"
+    password: "postgres"
+  jpa:
+    show-sql: "true"
+    properties:
+      hibernate:
+        dialect: "org.hibernate.dialect.PostgreSQL10Dialect"
+        format_sql: "true"
+  mail:
+    host: "smtp.mail.ru"
+    port: "465"
+    username: "tema_210@mail.ru"
+    password: "v7TB12eNHqGV6WXsZ5mE"
+    protocol: "smtp"
+    properties:
+      "mail.from": "tema_210@mail.ru"
+      "mail.smtp.ssl.enable": "true"
+      "mail.smtp.auth": "true"
+      "mail.smtp.starttls.enable": "true"
+server:
+  port: "8084"
+custom:
+  url:
+    report:
+      create: "http://localhost:8083/backend/report/{type}"
+      data:
+        get: "http://localhost:8083/backend/report/data/{uuid}"

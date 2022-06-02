@@ -48,7 +48,7 @@ public class ReportService implements IReportService {
 
     @Transactional
     @Override
-    public void create(ReportType type, Map<String, Object> params) {
+    public UUID create(ReportType type, Map<String, Object> params) {
         params = this.paramsValidationService.validate(params, type);
         ReportEntity entity = new ReportEntity();
         LocalDateTime now = LocalDateTime.now();
@@ -68,7 +68,8 @@ public class ReportService implements IReportService {
         this.reportDataService.create(saved.getId(), baos.toByteArray());
 
         saved.setStatus(ReportStatus.DONE);
-        this.repository.save(saved);
+        ReportEntity result = this.repository.save(saved);
+        return result.getId();
     }
 
     @Override

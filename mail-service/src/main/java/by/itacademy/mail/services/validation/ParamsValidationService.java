@@ -1,16 +1,16 @@
-package by.itacademy.report.services.validation;
+package by.itacademy.mail.services.validation;
 
-import by.itacademy.report.dto.api.ReportType;
-import by.itacademy.report.services.validation.api.IValidationService;
-import by.itacademy.report.services.api.exceptions.FieldError;
-import by.itacademy.report.services.api.exceptions.MultipleError;
+import by.itacademy.mail.dto.api.ReportType;
+import by.itacademy.mail.services.api.exceptions.FieldError;
+import by.itacademy.mail.services.api.exceptions.MultipleError;
+import by.itacademy.mail.services.validation.api.IParamsValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
 
 @Service
-public class ParamsValidationService implements IValidationService<Map<String, Object>, ReportType> {
+public class ParamsValidationService implements IParamsValidationService<Map<String, Object>, ReportType> {
 
     @Override
     public Map<String, Object> validate(Map<String, Object> params, ReportType type) {

@@ -1,0 +1,11 @@
+package by.itacademy.mail.dao;
+
+import by.itacademy.mail.entities.MailEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface MailRepository extends JpaRepository<MailEntity, UUID> {
+}
