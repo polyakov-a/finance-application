@@ -11,14 +11,17 @@ import by.itacademy.report.services.handler.api.IReportHandler;
 import by.itacademy.report.services.report.api.IReportService;
 import by.itacademy.report.services.handler.api.ReportFactory;
 import by.itacademy.report.services.validation.ParamsValidationService;
+import org.apache.poi.ss.extractor.ExcelExtractor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -54,27 +57,45 @@ public class ReportService implements IReportService {
         LocalDateTime now = LocalDateTime.now();
         entity.setDtCreate(now);
         entity.setDtUpdate(now);
-        entity.setDescription("Дата создания отчёта " + type.name() + ": " + now);
-        entity.setStatus(ReportStatus.LOADED);
+        entity.setDescription("Дата создания отчёта " + type.name() + ": " + now.truncatedTo(ChronoUnit.SECONDS));
+        entity.setStatus(ReportStatus.PROGRESS);
         entity.setType(type);
         entity.setParams(params.toString());
         ReportEntity saved = this.repository.save(entity);
 
-        IReportHandler<?> reportHandler = this.reportFactory.chooseReportRealization(type);
-        saved.setStatus(ReportStatus.PROGRESS);
-        saved = this.repository.save(saved);
-
-        ByteArrayOutputStream baos = reportHandler.handle(params);
-        this.reportDataService.create(saved.getId(), baos.toByteArray());
-
-        saved.setStatus(ReportStatus.DONE);
+        ByteArrayOutputStream baos = null;
+        try {
+            IReportHandler<?> reportHandler = this.reportFactory.chooseReportRealization(type);
+            baos = reportHandler.handle(params);
+            saved.setStatus(ReportStatus.LOADED);
+            saved = this.repository.save(saved);
+        } catch (Exception e) {
+            saved.setStatus(ReportStatus.ERROR);
+        }
+        if (baos != null) {
+            try {
+                this.reportDataService.create(saved.getId(), baos.toByteArray());
+                saved.setStatus(ReportStatus.DONE);
+            } catch (Exception e) {
+                saved.setStatus(ReportStatus.ERROR);
+            }
+        }
         ReportEntity result = this.repository.save(saved);
         return result.getId();
     }
 
     @Override
     public ByteArrayOutputStream read(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID can't be null");
+        }
+        ReportEntity report = this.repository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Unable to find report with ID: " + id));
         byte[] data = this.reportDataService.read(id);
+        ReportStatus status = report.getStatus();
+        if (status.equals(ReportStatus.PROGRESS) || status.equals(ReportStatus.ERROR)) {
+            throw new IllegalArgumentException("Unable to get data from report with status " + status.name());
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length);
         baos.write(data, 0, data.length);
         return baos;

@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface ISchedulerService {
 
-    void addScheduledOperation(Schedule schedule, UUID operationID);
+    void addScheduledMail(Schedule schedule, UUID mailId);
 }

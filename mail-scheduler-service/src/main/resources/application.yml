@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: "jdbc:postgresql://localhost:5432/account_scheduler_service"
+    url: "jdbc:postgresql://localhost:5432/mail_scheduler_service"
     username: "postgres"
     password: "postgres"
   jpa:
@@ -19,15 +19,8 @@ spring:
         "org.quartz.jobStore.driverDelegateClass": "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
         "org.quartz.jobStore.tablePrefix": "quartz.QRTZ_"
 server:
-  port: "8082"
+  port: "8085"
 custom:
   url:
-    classifier:
-      currency:
-        get: "http://localhost:8081/classifier/currency/{uuid}"
-      operation-category:
-        get: "http://localhost:8081/classifier/operation/category/{uuid}"
-    account:
-      get: "http://localhost:8080/account/{uuid}"
-    operation:
-      create: "http://localhost:8080/account/{uuid}/operation"
+    mail:
+      create: "http://localhost:8084/mail"

@@ -57,7 +57,7 @@ public class ScheduledOperationService implements IScheduledOperationService {
         entity.setDtCreate(now);
         entity.setDtUpdate(now);
         ScheduledOperation saved = this.mapper.map(this.repository.save(entity), ScheduledOperation.class);
-        this.schedulerService.addScheduledOperation(saved.getSchedule(), saved.getId());
+        this.schedulerService.addScheduledMail(saved.getSchedule(), saved.getId());
 
         return saved;
     }
@@ -105,7 +105,9 @@ public class ScheduledOperationService implements IScheduledOperationService {
         entity.setOperation(operation);
         entity.setSchedule(schedule);
         entity.setDtUpdate(now);
-        this.repository.save(entity);
+        ScheduledOperationEntity saved = this.repository.save(entity);
+        ScheduledOperation result = this.mapper.map(saved, ScheduledOperation.class);
+        this.schedulerService.addScheduledMail(result.getSchedule(), result.getId());
 
         return this.getById(id);
     }

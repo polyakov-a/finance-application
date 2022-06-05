@@ -1,14 +1,16 @@
-package by.itacademy.account.scheduler.services.scheduler;
+package by.itacademy.mail.scheduler.services.scheduler;
 
-import by.itacademy.account.scheduler.dto.Schedule;
-import by.itacademy.account.scheduler.services.scheduler.api.ISchedulerService;
+import by.itacademy.mail.scheduler.dto.wrappers.MailWrapper;
+import by.itacademy.mail.scheduler.dto.Schedule;
+import by.itacademy.mail.scheduler.services.scheduler.api.ISchedulerService;
 import org.quartz.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -22,10 +24,11 @@ public class SchedulerService implements ISchedulerService {
 
 
     @Override
-    public void addScheduledMail(Schedule schedule, UUID operationId) {
-        JobDetail job = JobBuilder.newJob(OperationJob.class)
-                .withIdentity(operationId.toString(), "operations")
-                .usingJobData("operation", operationId.toString())
+    public void addScheduledMail(Schedule schedule, MailWrapper mailWrapper) {
+        Map<String, MailWrapper> map = new HashMap<>();
+        map.put("mailWrapper", mailWrapper);
+        JobDetail job = JobBuilder.newJob(MailJob.class)
+                .usingJobData(new JobDataMap(map))
                 .build();
 
         int interval = schedule.getInterval().intValue();
@@ -39,8 +42,7 @@ public class SchedulerService implements ISchedulerService {
                 stop.getDayOfMonth(), stop.getMonthValue(), stop.getYear());
 
         TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder
-                .newTrigger()
-                .withIdentity(operationId.toString(), "operations");
+                .newTrigger();
 
         SimpleScheduleBuilder ssb = null;
         CronScheduleBuilder csb = null;
@@ -94,7 +96,7 @@ public class SchedulerService implements ISchedulerService {
         try {
             this.scheduler.scheduleJob(job, trigger);
         } catch (SchedulerException e) {
-            throw new RuntimeException("Error creating a scheduled operation", e);
+            throw new RuntimeException("Error creating a scheduled mail", e);
         }
     }
 }

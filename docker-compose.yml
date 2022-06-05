@@ -42,6 +42,10 @@ services:
     build: mail-service
     networks:
       - finance_ntwrk
+  mail-scheduler-service:
+    build: mail-scheduler-service
+    networks:
+      - finance_ntwrk
   proxy:
     build: proxy
     ports:
