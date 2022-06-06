@@ -6,11 +6,13 @@ import by.itacademy.report.entities.ReportDataEntity;
 import by.itacademy.report.services.report.api.IReportDataService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class ReportDataService implements IReportDataService {
 
     private final ReportDataRepository repository;
@@ -23,6 +25,7 @@ public class ReportDataService implements IReportDataService {
     }
 
     @Override
+    @Transactional
     public ReportData create(UUID id, byte[] data) {
         if (id == null || data.length == 0) {
             throw new IllegalArgumentException("Invalid parameters");

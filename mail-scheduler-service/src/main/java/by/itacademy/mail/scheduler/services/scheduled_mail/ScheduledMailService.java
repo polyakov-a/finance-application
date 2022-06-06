@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ScheduledMailService implements IScheduledMailService {
 
     private final ScheduledMailRepository repository;
@@ -115,6 +116,7 @@ public class ScheduledMailService implements IScheduledMailService {
     }
 
     @Override
+    @Transactional
     public ScheduledMail update(ScheduledMailWrapper wrapper, UUID id, LocalDateTime dtUpdate) {
         this.scheduleValidationService.validate(wrapper.getSchedule());
         this.mailValidationService.validate(wrapper.getMail());

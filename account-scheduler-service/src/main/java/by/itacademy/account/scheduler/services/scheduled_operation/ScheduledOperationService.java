@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ScheduledOperationService implements IScheduledOperationService {
 
     private final ScheduledOperationRepository repository;
@@ -88,6 +89,7 @@ public class ScheduledOperationService implements IScheduledOperationService {
     }
 
     @Override
+    @Transactional
     public ScheduledOperation update(ScheduledOperation scheduledOperation, UUID id, LocalDateTime dtUpdate) {
         scheduledOperation = this.validationService.validate(scheduledOperation);
         ScheduledOperationEntity entity = this.repository.findById(id)

@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OperationService implements IOperationService {
 
     private final OperationRepository repository;
@@ -38,6 +40,7 @@ public class OperationService implements IOperationService {
     }
 
     @Override
+    @Transactional
     public Operation create(Operation operation, UUID accountId) {
         operation = this.validationService.validate(operation);
         OperationEntity entity = mapper.map(operation, OperationEntity.class);
@@ -78,6 +81,7 @@ public class OperationService implements IOperationService {
     }
 
     @Override
+    @Transactional
     public Operation update(Operation operation, UUID accountId, UUID operationId, LocalDateTime dtUpdate) {
         operation = this.validationService.validate(operation);
         OperationEntity entity = this.repository.findById(operationId)
@@ -101,6 +105,7 @@ public class OperationService implements IOperationService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID accountId, UUID operationId, LocalDateTime dtUpdate) {
         OperationEntity entity = this.repository.findById(operationId)
                 .orElseThrow(() -> new IllegalArgumentException("Unable to find operation with ID: " + operationId));

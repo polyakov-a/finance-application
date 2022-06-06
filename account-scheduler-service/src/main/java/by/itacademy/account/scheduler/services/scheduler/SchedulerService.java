@@ -35,7 +35,7 @@ public class SchedulerService implements ISchedulerService {
                 start.getHour(), start.getMinute(), start.getSecond(),
                 start.getDayOfMonth(), start.getMonthValue(), start.getYear());
         Date stopTime = DateBuilder.dateOf(
-                stop.getHour(), stop.getMinute(), start.getSecond(),
+                stop.getHour(), stop.getMinute(), stop.getSecond(),
                 stop.getDayOfMonth(), stop.getMonthValue(), stop.getYear());
 
         TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder

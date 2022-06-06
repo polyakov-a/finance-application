@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OperationCategoryService implements IOperationCategoryService {
 
     private final OperationCategoryRepository repository;
@@ -32,6 +34,7 @@ public class OperationCategoryService implements IOperationCategoryService {
     }
 
     @Override
+    @Transactional
     public OperationCategory create(OperationCategory operationCategory) {
         operationCategory = this.validationService.validate(operationCategory);
         OperationCategoryEntity entity = this.mapper.map(operationCategory, OperationCategoryEntity.class);

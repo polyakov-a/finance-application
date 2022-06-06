@@ -62,7 +62,11 @@ public class ReportController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     private ResponseEntity<?> head(@PathVariable("uuid") UUID reportId) {
-        this.reportService.read(reportId);
-        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+        if (this.reportService.isAvailable(reportId)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 }

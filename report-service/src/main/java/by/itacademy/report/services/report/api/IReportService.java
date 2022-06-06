@@ -15,4 +15,6 @@ public interface IReportService {
     ByteArrayOutputStream read(UUID id);
 
     PageOfReport getAll(Pageable pageable);
+
+    boolean isAvailable(UUID id);
 }

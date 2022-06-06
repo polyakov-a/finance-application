@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class AccountService implements IAccountService {
 
     private final AccountRepository repository;
@@ -35,6 +36,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    @Transactional
     public Account create(Account account) {
         account = this.validationService.validate(account);
         AccountEntity entity = this.mapper.map(account, AccountEntity.class);
@@ -113,13 +115,16 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public Account updateBalance(UUID accountId, BigDecimal value) {
+        if (accountId == null) {
+            throw new IllegalArgumentException("ID can't be null");
+        }
         if (value == null) {
             throw new IllegalArgumentException("Value can't be null");
         }
         AccountEntity entity = this.repository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Unable to find account with ID: " + accountId));
         entity.setBalance(entity.getBalance().add(value));
-        entity.setDtCreate(LocalDateTime.now());
+        entity.setDtUpdate(LocalDateTime.now());
         this.repository.save(entity);
         return this.getById(accountId);
     }
