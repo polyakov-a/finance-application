@@ -7,6 +7,7 @@ import by.itacademy.report.services.rest.AccountRestService;
 import by.itacademy.report.services.rest.CurrencyRestService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Scope(value = "prototype")
 public class BalanceReportHandler implements IReportHandler<Account> {
 
     private final AccountRestService accountRestService;
@@ -57,8 +59,7 @@ public class BalanceReportHandler implements IReportHandler<Account> {
         return baos;
     }
 
-    @Override
-    public void createHeaders() {
+    private void createHeaders() {
         Row row = this.sheet.createRow(0);
 
         CellStyle style = workbook.createCellStyle();
@@ -94,8 +95,7 @@ public class BalanceReportHandler implements IReportHandler<Account> {
         cell.setCellStyle(style);
     }
 
-    @Override
-    public void createData(Collection<Account> data) {
+    private void createData(Collection<Account> data) {
         if (data == null) {
             throw new IllegalArgumentException("Data can't be null");
         }

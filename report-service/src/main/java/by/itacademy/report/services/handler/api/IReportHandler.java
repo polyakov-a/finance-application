@@ -9,8 +9,4 @@ import java.util.Map;
 public interface IReportHandler<T> {
 
     ByteArrayOutputStream handle(Map<String, Object> params);
-
-    void createHeaders();
-
-    void createData(Collection<T> data);
 }

@@ -9,6 +9,7 @@ import by.itacademy.report.services.rest.OperationCategoryRestService;
 import by.itacademy.report.services.rest.OperationRestService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Scope(value = "prototype")
 public class DateReportHandler implements IReportHandler<Operation> {
 
     private final OperationRestService operationRestService;
@@ -78,8 +80,7 @@ public class DateReportHandler implements IReportHandler<Operation> {
         return baos;
     }
 
-    @Override
-    public void createHeaders() {
+    private void createHeaders() {
 
         Row row = this.sheet.createRow(0);
 
@@ -116,8 +117,7 @@ public class DateReportHandler implements IReportHandler<Operation> {
         cell.setCellStyle(style);
     }
 
-    @Override
-    public void createData(Collection<Operation> data) {
+    private void createData(Collection<Operation> data) {
         if (data == null) {
             throw new IllegalArgumentException("Data can't be null");
         }
