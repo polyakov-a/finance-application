@@ -71,6 +71,7 @@ public class ReportService implements IReportService {
             saved = this.repository.save(saved);
         } catch (Exception e) {
             saved.setStatus(ReportStatus.ERROR);
+            throw new RuntimeException("Error during report params handling");
         }
         if (baos != null) {
             try {
@@ -78,6 +79,7 @@ public class ReportService implements IReportService {
                 saved.setStatus(ReportStatus.DONE);
             } catch (Exception e) {
                 saved.setStatus(ReportStatus.ERROR);
+                throw new RuntimeException("Error during report creation");
             }
         }
         ReportEntity result = this.repository.save(saved);
